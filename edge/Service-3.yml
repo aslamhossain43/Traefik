@@ -1,0 +1,11 @@
+version: '2'
+services:
+
+  service-3:
+    build: .././Service-3
+    ports:
+      - 8083:8083
+    labels:
+      - traefik.port=8083
+      - traefik.frontend.rule=Host:www.mytraefik.com
+      - traefik.protocol=http

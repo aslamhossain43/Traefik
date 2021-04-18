@@ -1,0 +1,11 @@
+version: '2'
+services:
+
+  service-2:
+    build: .././Service-2
+    ports:
+      - 8082:8082
+    labels:
+      - traefik.port=8082
+      - traefik.frontend.rule=Host:www.mytraefik.com
+      - traefik.protocol=http
