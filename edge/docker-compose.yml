@@ -20,8 +20,7 @@ services:
       #- ./dynamic_config.yml:/dynamic_config.yml
     labels:
       - traefik.enable=true
-      #- traefik.http.routers.api.rule=Host(`traefik.www.mytraefik.com`)
-      #- traefik.http.routers.api.service=api@internal
+      #- traefik.http.routers.api.rule=Host(`www.mytraefik.com`)
 
   service-1:
     build:
@@ -31,9 +30,36 @@ services:
       - 8081:8081
     labels:
       - traefik.enable=true
-      - traefik.http.routers.service-1.rule=Host(`www.mytraefik.com`)
-      - traefik.http.routers.service-1.middlewares=my-middleware
-      - traefik.http.middlewares.my-middleware.addprefix.prefix=/api/s1
+      - traefik.http.routers.service-1.rule=Host(`s1.www.mytraefik.com`)
+      - traefik.http.routers.service-1.middlewares=s1-middleware
+      - traefik.http.middlewares.s1-middleware.addprefix.prefix=/api/s1
       #- traefik.http.routers.service-1.service=s1-loadbalancer
-      #- traefik.http.services.s1-loadbalancer.loadbalancer.server.port=8081,8082
-      #- traefik.http.routers.my-router.middlewares=my-middleware@docker
+      #- traefik.http.services.s1-loadbalancer.loadbalancer.server.port=8081
+
+  service-2:
+    build:
+      context: .././Service-2
+      dockerfile: Dockerfile
+    ports:
+      - 8082:8082
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.service-2.rule=Host(`s2.www.mytraefik.com`)
+      - traefik.http.routers.service-2.middlewares=s2-middleware
+      - traefik.http.middlewares.s2-middleware.addprefix.prefix=/api/s2
+      #- traefik.http.routers.service-2.service=s2-loadbalancer
+      #- traefik.http.services.s2-loadbalancer.loadbalancer.server.port=8082
+
+  service-3:
+    build:
+      context: .././Service-3
+      dockerfile: Dockerfile
+    ports:
+      - 8083:8083
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.service-3.rule=Host(`s3.www.mytraefik.com`)
+      - traefik.http.routers.service-3.middlewares=s3-middleware
+      - traefik.http.middlewares.s3-middleware.addprefix.prefix=/api/s3
+      #- traefik.http.routers.service-3.service=s3-loadbalancer
+      #- traefik.http.services.s3-loadbalancer.loadbalancer.server.port=8083
