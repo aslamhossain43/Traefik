@@ -1,0 +1,5 @@
+http:
+  routers:
+    my-router:
+      rule: Path(`/s1`) && PathPrefix(`/api`)
+      service: service-1

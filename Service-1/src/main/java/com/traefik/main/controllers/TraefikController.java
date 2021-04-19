@@ -1,12 +1,16 @@
 package com.traefik.main.controllers;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TraefikController {
-	@RequestMapping(value = "/")
+	@Value("${server.port}")
+	private int serverPort;
+
+	@RequestMapping(value = "/api/s1")
 	public String saySomething() {
-		return "From service-1";
+		return "From service-1, Port: " + serverPort;
 	}
 }

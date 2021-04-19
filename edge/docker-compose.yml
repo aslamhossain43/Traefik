@@ -1,20 +1,39 @@
-version: '2'
+version: "3"
 services:
-# ======services======
-  service-1:
-    extends:
-      file: Service-1.yml
-      service: service-1
-  service-2:
-    extends:
-      file: Service-2.yml
-      service: service-2
-  service-3:
-    extends:
-      file: Service-3.yml
-      service: service-3
-# ======traefik======
+
   traefik:
-    extends:
-      file: traefik.yml
-      service: traefik
+    image: traefik:v2.0
+    ports:
+      - 80:80
+      - 8080:8080
+    command: 
+      --api.insecure=true
+      --api.dashboard=true
+      --api.debug=true
+      --log.level=DEBUG
+      --providers.docker=true
+      --providers.docker.exposedbydefault=false
+      - --providers.file.filename=dynamic_config.yml
+      --entrypoints.web.address=:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      #- ./dynamic_config.yml:/dynamic_config.yml
+    labels:
+      - traefik.enable=true
+      #- traefik.http.routers.api.rule=Host(`traefik.www.mytraefik.com`)
+      #- traefik.http.routers.api.service=api@internal
+
+  service-1:
+    build:
+      context: .././Service-1
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8081
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.service-1.rule=Host(`www.mytraefik.com`)
+      - traefik.http.routers.service-1.middlewares=my-middleware
+      - traefik.http.middlewares.my-middleware.addprefix.prefix=/api/s1
+      #- traefik.http.routers.service-1.service=s1-loadbalancer
+      #- traefik.http.services.s1-loadbalancer.loadbalancer.server.port=8081,8082
+      #- traefik.http.routers.my-router.middlewares=my-middleware@docker
