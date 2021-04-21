@@ -17,6 +17,19 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
+    
+  consul:
+    image: consul:latest
+    ports:
+      - 8300:8300
+      - 8500:8500
+      - 8600:8600
+    command: consul agent -dev -ui -client 0.0.0.0
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.consul-router.rule=Host(`consul.www.mytraefik.com`)
+      - traefik.http.services.consul-service.loadbalancer.server.port=8500
+
   service-1:
     build:
       context: .././Service-1
