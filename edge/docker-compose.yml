@@ -20,6 +20,8 @@ services:
     
   consul:
     image: consul:latest
+    depends_on:
+      - traefik
     ports:
       - 8300:8300
       - 8500:8500
@@ -29,11 +31,16 @@ services:
       - traefik.enable=true
       - traefik.http.routers.consul-router.rule=Host(`consul.www.mytraefik.com`)
       - traefik.http.services.consul-service.loadbalancer.server.port=8500
+    environment:
+      - CONSUL_URL=consul
+      - CONSUL_PORT=8500
 
   service-1:
     build:
       context: .././Service-1
       dockerfile: Dockerfile
+    depends_on:
+      - consul
     ports:
       - 8081:8081
     labels:
@@ -41,11 +48,16 @@ services:
       - traefik.http.routers.s1-router.rule=Host(`s1.www.mytraefik.com`)
       - traefik.http.middlewares.s1-middleware.addprefix.prefix=/api/s1
       - traefik.http.routers.s1-router.middlewares=s1-middleware@docker
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
 
   service-2:
     build:
       context: .././Service-2
       dockerfile: Dockerfile
+    depends_on:
+      - consul
     ports:
       - 8082:8082
     labels:
@@ -53,11 +65,16 @@ services:
       - traefik.http.routers.s2-router.rule=Host(`www.mytraefik.com`) && Path(`/s2`)
       - traefik.http.middlewares.s2-middleware.addprefix.prefix=/api
       - traefik.http.routers.s2-router.middlewares=s2-middleware@docker
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
 
   service-3:
     build:
       context: .././Service-3
       dockerfile: Dockerfile
+    depends_on:
+      - consul
     ports:
       - 8083:8083
     labels:
@@ -66,11 +83,16 @@ services:
       - traefik.http.middlewares.loadbalancing-middleware.addprefix.prefix=/api/s
       - traefik.http.routers.loadbalancing-router.middlewares=loadbalancing-middleware@docker
       - traefik.http.services.loadbalancing-service.loadbalancer.server.port=8083
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
 
   service-4:
     build:
       context: .././Service-4
       dockerfile: Dockerfile
+    depends_on:
+      - consul
     ports:
       - 8084:8084
     labels:
@@ -79,3 +101,6 @@ services:
       - traefik.http.middlewares.loadbalancing-middleware.addprefix.prefix=/api/s
       - traefik.http.routers.loadbalancing-router.middlewares=loadbalancing-middleware@docker
       - traefik.http.services.loadbalancing-service.loadbalancer.server.port=8084
+    environment:
+      - SPRING_CLOUD_CONSUL_HOST=consul
+      - SPRING_CLOUD_CONSUL_PORT=8500
