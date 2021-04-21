@@ -13,14 +13,9 @@ services:
       --log.level=DEBUG
       --providers.docker=true
       --providers.docker.exposedbydefault=false
-      - --providers.file.filename=dynamic_config.yml
       --entrypoints.web.address=:80
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      #- ./dynamic_config.yml:/dynamic_config.yml
-    labels:
-      - traefik.enable=true
-      #- traefik.http.routers.traefik-router.rule=Host(`traefik.www.mytraefik.com`)
 
   service-1:
     build:
