@@ -16,6 +16,9 @@ services:
       --entrypoints.web.address=:80
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.http.routers.traefik-router.rule=Host(`traefik.www.mytraefik.com`)
+      - traefik.http.services.traefik-service.loadbalancer.server.port=8080
 
     
   consul:
@@ -62,7 +65,7 @@ services:
       - 8082:8082
     labels:
       - traefik.enable=true
-      - traefik.http.routers.s2-router.rule=Host(`www.mytraefik.com`) && Path(`/s2`)
+      - traefik.http.routers.s2-router.rule=Host(`s2.www.mytraefik.com`) && Path(`/s2`)
       - traefik.http.middlewares.s2-middleware.addprefix.prefix=/api
       - traefik.http.routers.s2-router.middlewares=s2-middleware@docker
     environment:
