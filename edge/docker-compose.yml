@@ -20,7 +20,7 @@ services:
       #- ./dynamic_config.yml:/dynamic_config.yml
     labels:
       - traefik.enable=true
-      #- traefik.http.routers.api.rule=Host(`www.mytraefik.com`)
+      #- traefik.http.routers.traefik-router.rule=Host(`traefik.www.mytraefik.com`)
 
   service-1:
     build:
@@ -33,7 +33,6 @@ services:
       - traefik.http.routers.s1-router.rule=Host(`s1.www.mytraefik.com`)
       - traefik.http.middlewares.s1-middleware.addprefix.prefix=/api/s1
       - traefik.http.routers.s1-router.middlewares=s1-middleware@docker
-      - traefik.http.services.s1-service.loadbalancer.server.port=8081
 
   service-2:
     build:
@@ -43,10 +42,9 @@ services:
       - 8082:8082
     labels:
       - traefik.enable=true
-      - traefik.http.routers.s2-router.rule=Host(`s2.www.mytraefik.com`)
-      - traefik.http.middlewares.s2-middleware.addprefix.prefix=/api/s2
+      - traefik.http.routers.s2-router.rule=Host(`www.mytraefik.com`) && Path(`/s2`)
+      - traefik.http.middlewares.s2-middleware.addprefix.prefix=/api
       - traefik.http.routers.s2-router.middlewares=s2-middleware@docker
-      - traefik.http.services.s2-service.loadbalancer.server.port=8082
 
   service-3:
     build:
@@ -56,7 +54,20 @@ services:
       - 8083:8083
     labels:
       - traefik.enable=true
-      - traefik.http.routers.s3-router.rule=Host(`s3.www.mytraefik.com`)
-      - traefik.http.middlewares.s3-middleware.addprefix.prefix=/api/s3
-      - traefik.http.routers.s3-router.middlewares=s3-middleware@docker
-      - traefik.http.services.s3-service.loadbalancer.server.port=8083
+      - traefik.http.routers.loadbalancing-router.rule=Host(`loadbalancing.mytraefik.com`)
+      - traefik.http.middlewares.loadbalancing-middleware.addprefix.prefix=/api/s
+      - traefik.http.routers.loadbalancing-router.middlewares=loadbalancing-middleware@docker
+      - traefik.http.services.loadbalancing-service.loadbalancer.server.port=8083
+
+  service-4:
+    build:
+      context: .././Service-4
+      dockerfile: Dockerfile
+    ports:
+      - 8084:8084
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.loadbalancing-router.rule=Host(`loadbalancing.mytraefik.com`)
+      - traefik.http.middlewares.loadbalancing-middleware.addprefix.prefix=/api/s
+      - traefik.http.routers.loadbalancing-router.middlewares=loadbalancing-middleware@docker
+      - traefik.http.services.loadbalancing-service.loadbalancer.server.port=8084
