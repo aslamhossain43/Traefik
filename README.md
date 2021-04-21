@@ -8,7 +8,7 @@
 6. In root directory(Traefik-Consul-Microservices) run 'mvn clean install -DskipTests'
 7. In edge directory run 'sudo docker-compose up -d'
 8. Finally check:
-9. Traefik: traefik.www.mytraefik.com:8080/
+9. Traefik: http://traefik.www.mytraefik.com:8080/
 10. Consul: http://consul.www.mytraefik.com/
 11. Service-1: http://s1.www.mytraefik.com/
 12. Service-2: http://s2.www.mytraefik.com/s2
