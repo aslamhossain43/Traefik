@@ -11,6 +11,6 @@ public class TraefikController {
 
 	@RequestMapping(value = "/api/s")
 	public String saySomething() {
-		return "From service-3, Port: " + serverPort;
+		return "From service-4, Port: " + serverPort;
 	}
 }
